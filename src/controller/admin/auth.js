@@ -1,6 +1,6 @@
 const User = require("../../models/user");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const shortid = require("shortid");
 
 exports.signup = (req, res) => {
@@ -13,12 +13,9 @@ exports.signup = (req, res) => {
     User.estimatedDocumentCount(async (err, count) => {
       if (err) return res.status(400).json({ error });
       let role = "admin";
-      if (count === 0) {
-        role = "super-admin";
-      }
 
       const { firstName, lastName, email, password } = req.body;
-      const hash_password = await bcrypt.hash(password, 10);
+      const hash_password = await bcrypt.hashSync(password, 10);
       const _user = new User({
         firstName,
         lastName,
@@ -50,10 +47,7 @@ exports.signin = (req, res) => {
     if (error) return res.status(400).json({ error });
     if (user) {
       const isPassword = await user.authenticate(req.body.password);
-      if (
-        isPassword &&
-        (user.role === "admin" || user.role === "super-admin")
-      ) {
+      if (isPassword && user.role === "admin") {
         const token = jwt.sign(
           { _id: user._id, role: user.role },
           process.env.JWT_SECRET,

@@ -8,12 +8,15 @@ exports.createProduct = (req, res) => {
 
   const { name, price, description, category, quantity, createdBy } = req.body;
   let productPictures = [];
+  console.log("filesss", req.files);
 
   if (req.files.length > 0) {
     productPictures = req.files.map((file) => {
-      return { img: file.location };
+      return { img: file.filename };
     });
   }
+
+  console.log("req===========>", productPictures);
 
   const product = new Product({
     name: name,

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
@@ -38,11 +38,11 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin", "super-admin"],
+      enum: ["user", "admin"],
       default: "user",
     },
     contactNumber: { type: String },
-    pofilePicture: { type: String },
+    profilePicture: { type: String },
   },
   { timestamps: true }
 );
@@ -58,7 +58,7 @@ userSchema.virtual("fullName").get(function () {
 
 userSchema.methods = {
   authenticate: async function (password) {
-    return await bcrypt.compare(password, this.hash_password);
+    return await bcrypt.compareSync(password, this.hash_password);
   },
 };
 
