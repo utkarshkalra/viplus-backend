@@ -4,6 +4,7 @@ const {
   getCategories,
   updateCategories,
   deleteCategories,
+  getCategoriesUser,
 } = require("../controller/category");
 const { requireSignin, adminMiddleware } = require("../common-middleware");
 const router = express.Router();
@@ -30,6 +31,7 @@ router.post(
   addCategory
 );
 router.get("/category/getcategory", getCategories);
+router.get("/category/getcategoryuser", getCategoriesUser);
 router.post(
   "/category/update",
   requireSignin,

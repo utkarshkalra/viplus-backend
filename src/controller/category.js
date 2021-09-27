@@ -59,6 +59,15 @@ exports.getCategories = (req, res) => {
   });
 };
 
+exports.getCategoriesUser = (req, res) => {
+  Category.find({}).exec((error, categories) => {
+    if (error) return res.status(400).json({ error });
+    if (categories) {
+      res.status(200).json({ categories });
+    }
+  });
+};
+
 exports.updateCategories = async (req, res) => {
   const { _id, name, parentId, type } = req.body;
   const updatedCategories = [];
