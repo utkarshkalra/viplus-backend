@@ -105,6 +105,7 @@ exports.getProductDetailsById = (req, res) => {
 // new update
 exports.deleteProductById = (req, res) => {
   const { productId } = req.body.payload;
+  //  fs.unlinkSync(`images/${req.params.folder}/${req.params.id}.png`);
   if (productId) {
     Product.deleteOne({ _id: productId }).exec((error, result) => {
       if (error) return res.status(400).json({ error });
