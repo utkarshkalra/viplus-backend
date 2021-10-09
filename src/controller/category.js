@@ -1,6 +1,7 @@
 const Category = require("../models/category");
 const slugify = require("slugify");
 const shortid = require("shortid");
+const cloudinary = require("../utils/cloudinary");
 
 function createCategories(categories, parentId = null) {
   const categoryList = [];
@@ -25,15 +26,19 @@ function createCategories(categories, parentId = null) {
   return categoryList;
 }
 
-exports.addCategory = (req, res) => {
+exports.addCategory = async (req, res) => {
   const categoryObj = {
     name: req.body.name,
     slug: `${slugify(req.body.name)}-${shortid.generate()}`,
     createdBy: req.user._id,
   };
-
+  const uploader = async (path) =>
+    await cloudinary.uploader.upload(path, {
+      upload_preset: "category_pictures",
+    });
   if (req.file) {
-    categoryObj.categoryImage = req.file.filename;
+    const result = await uploader(req.file.path);
+    categoryObj.categoryImage = result.url;
 
     console.log("categoryObj.categoryImage", categoryObj.categoryImage);
   }

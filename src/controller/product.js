@@ -3,18 +3,30 @@ const shortid = require("shortid");
 const slugify = require("slugify");
 const Category = require("../models/category");
 
-exports.createProduct = (req, res) => {
+const cloudinary = require("../utils/cloudinary");
+exports.createProduct = async (req, res) => {
   //res.status(200).json( { file: req.files, body: req.body } );
 
   const { name, price, description, category, quantity, createdBy } = req.body;
   let productPictures = [];
-  console.log("filesss", req.files);
+  // console.log("filesss", req.files);
 
-  if (req.files.length > 0) {
-    productPictures = req.files.map((file) => {
-      return { img: file.filename };
+  const uploader = async (path) =>
+    await cloudinary.uploader.upload(path, {
+      upload_preset: "product_pictures",
     });
+  for (const element of req.files) {
+    // console.log("/req.files", element);
+    const { path } = element;
+    const result = await uploader(path);
+    productPictures.push(result.url);
   }
+
+  // if (req.files.length > 0) {
+  //   productPictures = req.files.map((file) => {
+  //     return { img: file.filename };
+  //   });
+  // }
 
   console.log("req===========>", productPictures);
 
@@ -94,6 +106,7 @@ exports.getProductDetailsById = (req, res) => {
     Product.findOne({ _id: productId }).exec((error, product) => {
       if (error) return res.status(400).json({ error });
       if (product) {
+        console.log("prod", product);
         res.status(200).json({ product });
       }
     });
