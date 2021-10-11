@@ -42,7 +42,9 @@ app.use(
 
 app.use(express.json());
 
-app.get("/", (req, res) => res.send("Viplus-backend-is-running"));
+app.get("/", (req, res) =>
+  res.send("<h2>Hey There!!</h2> <h1>Viplus-backend </h1><h2> is-running</h2>")
+);
 app.use("/public", express.static(path.join(__dirname, "uploads")));
 app.use("/api", authRoutes);
 app.use("/api", adminRoutes);
