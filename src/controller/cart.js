@@ -95,18 +95,20 @@ exports.getCartItems = (req, res) => {
       if (error) return res.status(400).json({ error });
       if (cart) {
         let cartItems = {};
-        cart.cartItems.forEach((item, index) => {
-          cartItems[item.product._id.toString()] = {
-            _id: item.product._id.toString(),
-            name: item.product.name,
-            img: item.product.productPictures[0].img,
-            price: item.product.price,
-            qty: item.quantity,
-          };
-        });
-        res.status(200).json({ cartItems });
+        if (cart.cartItems.length > 0) {
+          cart?.cartItems?.forEach((item, index) => {
+            cartItems[item?.product?._id.toString()] = {
+              _id: item?.product?._id.toString(),
+              name: item?.product?.name,
+              img: item?.product?.productPictures[0],
+              price: item?.product?.price,
+              qty: item.quantity,
+            };
+          });
+        }
+        return res.status(200).json({ cartItems });
       } else {
-        res.status(200).json({});
+        return res.status(200).json({});
       }
     });
   //}
